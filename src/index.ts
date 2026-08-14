@@ -344,9 +344,8 @@ async function main(): Promise<void> {
 		const app = express();
 	app.use(express.json());
 
-		app.use('/mcp', (req: Request, res: Response, next: NextFunction) => {
-			const expected = `Bearer ${config.authToken}`;
-			if (!config.authToken || req.headers.authorization !== expected) {
+		app.use('/mcp/:secret', (req: Request, res: Response, next: NextFunction) => {
+			if (!config.authToken || req.params.secret !== config.authToken) {
 				res.status(401).json({ error: 'Unauthorized' });
 				return;
 			}
@@ -374,7 +373,7 @@ async function main(): Promise<void> {
 			res.json({ status: 'ok', authenticated: Boolean(db.getTokens()) });
 		});
 
-		app.all('/mcp', async (req: Request, res: Response) => {
+		app.all('/mcp/:secret', async (req: Request, res: Response) => {
 			const sessionId = req.headers['mcp-session-id'] as string | undefined;
 
 			if (req.method === 'DELETE' && sessionId && transports.has(sessionId)) {
