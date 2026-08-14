@@ -2,7 +2,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import express, { type Request, type Response } from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import { WhoopClient } from './whoop-client.js';
 import { WhoopDatabase } from './database.js';
 import { WhoopSync } from './sync.js';
@@ -344,7 +344,7 @@ async function main(): Promise<void> {
 		const app = express();
 	app.use(express.json());
 
-		app.use('/mcp', (req: Request, res: Response, next) => {
+		app.use('/mcp', (req: Request, res: Response, next: NextFunction) => {
 			const expected = `Bearer ${config.authToken}`;
 			if (!config.authToken || req.headers.authorization !== expected) {
 				res.status(401).json({ error: 'Unauthorized' });
