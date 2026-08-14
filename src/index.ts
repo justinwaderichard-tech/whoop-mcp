@@ -312,14 +312,21 @@ function createMcpServer(): Server {
 				}
 
 				case 'get_auth_url': {
-					const scopes = ['read:profile', 'read:body_measurement', 'read:cycles', 'read:recovery', 'read:sleep', 'read:workout', 'offline'];
-					const url = client.getAuthorizationUrl(scopes);
-					return {
-						content: [{
-							type: 'text',
-							text: `To authorize with Whoop:\n\n1. Visit: ${url}\n2. Log in and authorize\n3. You'll be redirected back automatically\n\nRedirect URI: ${config.redirectUri}`,
-						}],
-					};
+					try {
+						const scopes = ['read:profile', 'read:body_measurement', 'read:cycles', 'read:recovery', 'read:sleep', 'read:workout', 'offline'];
+						const url = client.getAuthorizationUrl(scopes);
+						const result = {
+							content: [{
+								type: 'text',
+								text: `To authorize with Whoop:\n\n1. Visit: ${url}\n2. Log in and authorize\n3. You'll be redirected back automatically\n\nRedirect URI: ${config.redirectUri}`,
+							}],
+						};
+						console.log('[MCP] get_auth_url response:', JSON.stringify(result));
+						return result;
+					} catch (error) {
+						console.error('[AUTH URL ERROR]', error);
+						throw error;
+					}
 				}
 
 				default:
@@ -345,6 +352,7 @@ async function main(): Promise<void> {
 	app.use(express.json());
 
 		app.use('/mcp/:secret', (req: Request, res: Response, next: NextFunction) => {
+			console.log('[MCP] Incoming:', req.method, req.path);
 			if (!config.authToken || req.params.secret !== config.authToken) {
 				res.status(401).json({ error: 'Unauthorized' });
 				return;
