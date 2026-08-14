@@ -354,8 +354,6 @@ async function main(): Promise<void> {
 		});
 
 		app.get('/callback', async (req: Request, res: Response) => {
-
-		app.get('/callback', async (req: Request, res: Response) => {
 			const code = req.query.code as string | undefined;
 			if (!code) {
 				res.status(400).send('Missing authorization code');
