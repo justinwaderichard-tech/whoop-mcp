@@ -342,7 +342,18 @@ async function main(): Promise<void> {
 		process.stderr.write('Whoop MCP server running on stdio\n');
 	} else {
 		const app = express();
-		app.use(express.json());
+	app.use(express.json());
+
+		app.use('/mcp', (req: Request, res: Response, next) => {
+			const expected = `Bearer ${config.authToken}`;
+			if (!config.authToken || req.headers.authorization !== expected) {
+				res.status(401).json({ error: 'Unauthorized' });
+				return;
+			}
+			next();
+		});
+
+		app.get('/callback', async (req: Request, res: Response) => {
 
 		app.get('/callback', async (req: Request, res: Response) => {
 			const code = req.query.code as string | undefined;
