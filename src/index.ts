@@ -15,7 +15,7 @@ interface ToolArguments {
 const config = {
 	clientId: process.env.WHOOP_CLIENT_ID ?? '',
 	clientSecret: process.env.WHOOP_CLIENT_SECRET ?? '',
-	redirectUri: process.env.WHOOP_REDIRECT_URI ?? 'http://localhost:3000/callback',
+	redirectUri: process.env.WHOOP_REDIRECT_URI ?? '',
 	dbPath: process.env.DB_PATH ?? './whoop.db',
 	port: Number.parseInt(process.env.PORT ?? '3000', 10),
 	mode: process.env.MCP_MODE ?? 'http',
