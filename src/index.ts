@@ -19,6 +19,7 @@ const config = {
 	dbPath: process.env.DB_PATH ?? './whoop.db',
 	port: Number.parseInt(process.env.PORT ?? '3000', 10),
 	mode: process.env.MCP_MODE ?? 'http',
+	authToken: process.env.MCP_AUTH_TOKEN ?? '',
 };
 
 const db = new WhoopDatabase(config.dbPath);
